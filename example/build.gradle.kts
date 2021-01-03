@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -40,7 +38,7 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = Libs.composeVersion
-        kotlinCompilerVersion = getKotlinPluginVersion()
+        kotlinCompilerVersion = "1.4.21"
     }
 
     sourceSets {
