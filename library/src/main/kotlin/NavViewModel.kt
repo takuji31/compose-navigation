@@ -1,7 +1,9 @@
 package com.github.takuji31.compose.navigation
 
 import androidx.activity.OnBackPressedCallback
-import kotlinx.coroutines.CoroutineScope
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -10,7 +12,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 
-public class NavController<S : Screen<out ScreenId>>(coroutineScope: CoroutineScope) {
+public class NavViewModel<S : Screen<out ScreenId>>(savedStateHandle: SavedStateHandle) :
+    ViewModel() {
     private val _backStack: MutableStateFlow<List<BackStackEntry<S>>> =
         MutableStateFlow(emptyList())
 
@@ -20,12 +23,12 @@ public class NavController<S : Screen<out ScreenId>>(coroutineScope: CoroutineSc
     public val currentBackStackEntry: StateFlow<BackStackEntry<S>?> =
         backStack
             .map { it.lastOrNull() }
-            .stateIn(coroutineScope, SharingStarted.Eagerly, null)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     public val currentScreen: StateFlow<S?> =
         currentBackStackEntry
             .map { it?.screen }
-            .stateIn(coroutineScope, SharingStarted.Eagerly, null)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     internal val onBackPressedCallback = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
@@ -38,7 +41,7 @@ public class NavController<S : Screen<out ScreenId>>(coroutineScope: CoroutineSc
             .onEach {
                 onBackPressedCallback.isEnabled = it.size > 1
             }
-            .launchIn(coroutineScope)
+            .launchIn(viewModelScope)
     }
 
     fun setup(startScreen: S, restoredBackStack: List<BackStackEntry<S>> = emptyList()) {

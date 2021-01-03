@@ -62,6 +62,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.appcompat:appcompat:1.2.0")
     implementation("androidx.compose.ui:ui:${Libs.composeVersion}")
     implementation("androidx.compose.material:material:${Libs.composeVersion}")
     implementation("androidx.compose.ui:ui-tooling:${Libs.composeVersion}")
@@ -75,6 +76,7 @@ dependencies {
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
+    androidTestImplementation("androidx.fragment:fragment-testing:1.3.0-rc01")
 }
 
 afterEvaluate {
