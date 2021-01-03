@@ -34,6 +34,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
         useIR = true
+        freeCompilerArgs = freeCompilerArgs + "-Xexplicit-api=strict"
     }
     buildFeatures {
         compose = true
