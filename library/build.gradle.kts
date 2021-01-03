@@ -10,7 +10,6 @@ android {
     compileSdkVersion(30)
 
     defaultConfig {
-        applicationId = "jp.takuji31.compose.navigation"
         minSdkVersion(23)
         targetSdkVersion(30)
         versionCode = 1
