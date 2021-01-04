@@ -30,7 +30,7 @@ public class NavViewModel<S : Screen<out ScreenId>>(savedStateHandle: SavedState
             .map { it?.screen }
             .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    internal val onBackPressedCallback = object : OnBackPressedCallback(false) {
+    val onBackPressedCallback = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             pop()
         }
