@@ -20,8 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import com.github.takuji31.compose.navigation.NavHost
-import com.github.takuji31.compose.navigation.NavViewModel
-import com.github.takuji31.compose.navigation.navViewModel
+import com.github.takuji31.compose.navigation.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
 import jp.takuji31.compose.navigation.ui.ComposeNavigationTheme
 
 private val ExampleScreen.title: String
@@ -31,15 +31,15 @@ private val ExampleScreen.title: String
         ExampleScreen.Settings -> "Settings"
     }
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val navViewModel: NavViewModel<ExampleScreen> by navViewModel { ExampleScreen.Home }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        onBackPressedDispatcher.addCallback(this, navViewModel.onBackPressedCallback)
         setContent {
+            val navController = rememberNavController<ExampleScreen>()
             ComposeNavigationTheme {
-                val currentScreen by navViewModel.currentScreen.collectAsState()
+                val currentScreen by navController.currentScreen.collectAsState()
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                                 label = { Text(text = ExampleScreen.Home.title) },
                                 selected = currentScreen == ExampleScreen.Home,
                                 onClick = {
-                                    navViewModel.navigateTo(
+                                    navController.navigateTo(
                                         ExampleScreen.Home,
                                         ExampleScreenId.Home,
                                         inclusive = true,
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                                 label = { Text(text = ExampleScreen.MyPage.title) },
                                 selected = currentScreen == ExampleScreen.MyPage,
                                 onClick = {
-                                    navViewModel.navigateTo(
+                                    navController.navigateTo(
                                         ExampleScreen.MyPage,
                                         ExampleScreenId.Home,
                                         inclusive = false,
@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                                 label = { Text(text = ExampleScreen.Settings.title) },
                                 selected = currentScreen == ExampleScreen.Settings,
                                 onClick = {
-                                    navViewModel.navigateTo(
+                                    navController.navigateTo(
                                         ExampleScreen.Settings,
                                         ExampleScreenId.Home,
                                         inclusive = false,
@@ -91,7 +91,11 @@ class MainActivity : AppCompatActivity() {
                 ) {
 
                 }
-                NavHost(navViewModel = navViewModel) {
+                NavHost(
+                    navController = navController,
+                    initialScreen = ExampleScreen.Home,
+                    viewModelFactory = defaultViewModelProviderFactory,
+                ) {
                     screen<ExampleScreen.Home> {
                         Box(Modifier.fillMaxSize()) {
                             Text(

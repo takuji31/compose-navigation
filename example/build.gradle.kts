@@ -1,7 +1,9 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    kotlin("kapt")
     id("kotlin-parcelize")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -58,6 +60,10 @@ dependencies {
     implementation("androidx.compose.ui:ui:${Libs.composeVersion}")
     implementation("androidx.compose.material:material:${Libs.composeVersion}")
     implementation("androidx.compose.ui:ui-tooling:${Libs.composeVersion}")
+    implementation(Libs.Hilt.core)
+    implementation(Libs.Hilt.viewModel)
+    kapt(Libs.Hilt.androidXCompiler)
+    kapt(Libs.Hilt.compiler)
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-rc01")
     testImplementation("junit:junit:4.13.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
