@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import com.github.takuji31.compose.navigation.NavHost
 import com.github.takuji31.compose.navigation.rememberNavController
-import dagger.hilt.android.AndroidEntryPoint
 import jp.takuji31.compose.navigation.ui.ComposeNavigationTheme
 
 private val ExampleScreen.title: String
@@ -31,7 +30,7 @@ private val ExampleScreen.title: String
         ExampleScreen.Settings -> "Settings"
     }
 
-@AndroidEntryPoint
+//@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,15 +93,9 @@ class MainActivity : AppCompatActivity() {
                 NavHost(
                     navController = navController,
                     initialScreen = ExampleScreen.Home,
-                    viewModelFactory = defaultViewModelProviderFactory,
                 ) {
                     screen<ExampleScreen.Home> {
-                        Box(Modifier.fillMaxSize()) {
-                            Text(
-                                text = "This is Home",
-                                modifier = Modifier.align(Alignment.Center),
-                            )
-                        }
+                        Home()
                     }
                     screen<ExampleScreen.MyPage> {
                         Box(Modifier.fillMaxSize()) {

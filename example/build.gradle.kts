@@ -65,7 +65,13 @@ dependencies {
     kapt(Libs.Hilt.androidXCompiler)
     kapt(Libs.Hilt.compiler)
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.0-rc01")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.0-rc01")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-rc01")
     testImplementation("junit:junit:4.13.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
+}
+
+kapt {
+    correctErrorTypes = true
 }

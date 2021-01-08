@@ -1,6 +1,7 @@
 package com.github.takuji31.compose.navigation
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.ContextWrapper
 import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.compose.runtime.Composable
@@ -13,18 +14,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.platform.AmbientLifecycleOwner
 import androidx.compose.ui.platform.AmbientViewModelStoreOwner
+import androidx.core.os.bundleOf
+import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-val AmbientViewModelFactory = ambientOf<ViewModelProvider.Factory?>()
-val AmbientNavViewModel = ambientOf<NavController<*>>()
+typealias ViewModelFactoryProducer = ((Application, BackStackEntry<*>) -> ViewModelProvider.Factory)
+
+val AmbientViewModelFactoryProducer = ambientOf<ViewModelFactoryProducer?>()
+val AmbientNavController = ambientOf<NavController<*>>()
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun <S : Screen<out ScreenId>> NavHost(
     navController: NavController<S>,
     initialScreen: S,
-    viewModelFactory: ViewModelProvider.Factory? = null,
+    viewModelFactoryProducer: ViewModelFactoryProducer = { application, backStackEntry ->
+        SavedStateViewModelFactory(
+            application,
+            backStackEntry,
+            bundleOf("screen" to backStackEntry.screen),
+        )
+    },
     builder: NavGraph<S>.() -> Unit,
 ) {
     val graph = remember(navController, builder) { NavGraph<S>().apply(builder) }
@@ -33,7 +44,7 @@ fun <S : Screen<out ScreenId>> NavHost(
     val viewModelStoreOwner = AmbientViewModelStoreOwner.current
     var context = AmbientContext.current
 
-    LaunchedEffect(navController, viewModelStoreOwner, context) {
+    LaunchedEffect(navController, viewModelStoreOwner, lifecycleOwner) {
         navController.setLifecycleOwner(lifecycleOwner)
         navController.setViewModelStoreOwner(viewModelStoreOwner)
         navController.setInitialScreen(initialScreen)
@@ -52,8 +63,8 @@ fun <S : Screen<out ScreenId>> NavHost(
     val currentBackStackEntry by navController.currentBackStackEntry.collectAsState()
     currentBackStackEntry?.let {
         Providers(
-            AmbientViewModelFactory provides viewModelFactory,
-            AmbientNavViewModel provides navController,
+            AmbientViewModelFactoryProducer provides viewModelFactoryProducer,
+            AmbientNavController provides navController,
         ) {
             graph.navigate(backStackEntry = it)
         }
@@ -79,8 +90,11 @@ public class NavGraph<S : Screen<out ScreenId>> {
         val content = checkNotNull(screenContentMap[backStackEntry.screen.javaClass]) {
             "Screen ${backStackEntry.screen} does not matched any destination!"
         }
-        Providers(AmbientViewModelStoreOwner provides backStackEntry) {
-            ScreenScope<S>(backStackEntry).content()
+        Providers(
+            AmbientViewModelStoreOwner provides backStackEntry,
+            AmbientLifecycleOwner provides backStackEntry,
+        ) {
+            ScreenScope(backStackEntry).content()
         }
     }
 }

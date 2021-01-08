@@ -85,9 +85,8 @@ public class NavController<S : Screen<out ScreenId>>(coroutineScope: CoroutineSc
                     screen = state.screen as S,
                     navControllerViewModel = checkNotNull(navControllerViewModel),
                     uuid = state.id,
-                ).also {
-                    it.restoreState(state.savedState)
-                }
+                    savedState = state.savedState,
+                )
             }
             updateMaxLifecycles()
         }

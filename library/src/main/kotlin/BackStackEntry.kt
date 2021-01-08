@@ -15,22 +15,29 @@ public data class BackStackEntry<S : Screen<out ScreenId>>(
     public val id: UUID,
     public val screen: S,
     private val viewModelStore: ViewModelStore,
+    private val savedState: Bundle,
 ) : ViewModelStoreOwner, SavedStateRegistryOwner {
-    override fun getViewModelStore(): ViewModelStore = viewModelStore
-
     private val lifecycle = LifecycleRegistry(this)
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
+
+    init {
+        savedStateRegistryController.performRestore(savedState)
+    }
+
+    override fun getViewModelStore(): ViewModelStore = viewModelStore
 
     companion object {
         internal fun <S : Screen<out ScreenId>> create(
             screen: S,
             navControllerViewModel: NavControllerViewModel,
+            savedState: Bundle = Bundle(),
             uuid: UUID = UUID.randomUUID(),
         ): BackStackEntry<S> =
             BackStackEntry(
                 UUID.randomUUID(),
                 screen,
                 navControllerViewModel.getViewModelStore(uuid),
+                savedState,
             )
     }
 
@@ -60,10 +67,6 @@ public data class BackStackEntry<S : Screen<out ScreenId>>(
 
     fun saveState(bundle: Bundle) {
         savedStateRegistryController.performSave(bundle)
-    }
-
-    fun restoreState(bundle: Bundle) {
-        savedStateRegistryController.performRestore(bundle)
     }
 
     private fun getStateAfter(event: Lifecycle.Event): Lifecycle.State {
