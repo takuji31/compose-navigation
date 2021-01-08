@@ -1,5 +1,6 @@
+package com.github.takuji31.compose.navigation
+
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.takuji31.compose.navigation.NavController
 import com.google.common.truth.Expect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

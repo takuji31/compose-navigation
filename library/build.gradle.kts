@@ -71,6 +71,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-rc01")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     testImplementation("junit:junit:4.13.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.0-alpha09")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.ext:truth:1.3.0")
     androidTestImplementation("com.google.truth:truth:1.1")

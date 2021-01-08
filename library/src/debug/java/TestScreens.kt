@@ -1,5 +1,5 @@
-import com.github.takuji31.compose.navigation.Screen
-import com.github.takuji31.compose.navigation.ScreenId
+package com.github.takuji31.compose.navigation
+
 import kotlinx.parcelize.Parcelize
 
 enum class TestScreenId : ScreenId {
